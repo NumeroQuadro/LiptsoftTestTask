@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @NoArgsConstructor
 @Getter
 @Setter
@@ -17,11 +20,8 @@ public class Category {
     private Integer id;
     @Column(name="category_name", nullable = false, unique = true)
     private String name;
-    @Column(name="category_description")
-    private String description;
 
-    public Category(String name, String description) {
+    public Category(String name) {
         this.name = name;
-        this.description = description;
     }
 }

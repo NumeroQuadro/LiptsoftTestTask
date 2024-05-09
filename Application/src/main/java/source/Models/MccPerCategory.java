@@ -11,12 +11,17 @@ import lombok.Setter;
 @Entity
 @Table(name = "mcc_per_category")
 public class MccPerCategory {
-    @Id
-    @OneToOne(mappedBy = "category_id", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private Category category;
-    private Integer mcc;
+    @EmbeddedId
+    private MccPerCategoryId id;
 
-    public MccPerCategory(Category category, Integer mcc) {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
+
+    @Column(name = "mcc", nullable = false)
+    private String mcc;
+
+    public MccPerCategory(Category category, String mcc) {
         this.category = category;
         this.mcc = mcc;
     }
