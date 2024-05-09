@@ -1,6 +1,7 @@
 package source.Services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import source.Models.Category;
@@ -11,6 +12,7 @@ import source.Repositories.CategoryRepository;
 import source.Repositories.MccPerCategoryRepository;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class CategoryPerCategoryService {
@@ -18,6 +20,8 @@ public class CategoryPerCategoryService {
     private CategoryRepository categoryRepository;
     @Autowired
     private CategoryPerCategoryRepository categoryPerCategoryRepository;
+    @Autowired
+    private MccPerCategoryRepository mccPerCategoryRepository;
 
     /**
      * Add new category with parent category name and child category name.
@@ -43,7 +47,20 @@ public class CategoryPerCategoryService {
             throw new IllegalStateException("Category with name" + childCategoryName + " already nested in any child category. Impossible to add category to itself.");
         }
 
-        // check if there are equal mccs in any child category and new possible child category
+        // todo: check if child of current parent category has same mccs as new category
+        // todo: chekc if parent categories of current category have same mccs as new category
+        var collectionOfCategoriesWithSameMccsAsGiveOne = getCategoriesWhichHaveSameMccsAsGivenOne(parentCategory.getId());
+        if (!collectionOfCategoriesWithSameMccsAsGiveOne.isEmpty()) {
+            var collectionNamesOfCategoriesWithSameMccsAsGivenOne = categoryRepository.findAllById(collectionOfCategoriesWithSameMccsAsGiveOne)
+                    .stream()
+                    .map(Category::getName)
+                    .toList();
+
+            throw new IllegalStateException("Mcc already reserved for categories in this list:" + collectionNamesOfCategoriesWithSameMccsAsGivenOne);
+        }
+
+        var mccsRelatedToParentCategory = getMccsByCategoryId(parentCategory.getId());
+        if (mccsRelatedToParentCategory.contains())
 
         var categoryPerCategory = new CategoryPerCategory(parentCategory, childCategory);
         categoryPerCategoryRepository.save(categoryPerCategory);
@@ -62,6 +79,60 @@ public class CategoryPerCategoryService {
         }
 
         return category;
+    }
+
+    /**
+     * Get categories which have same mccs as given one by calling
+     * `findDistinctCategoryIdsByMccCodes` query-based method in appropriate repository.
+     * @param parentCategoryId parent category id
+     * @return Collection<Integer> collection of category ids
+     */
+    // category a = 1111 2222
+    // category b = 3333 4444
+    // category c = 5555 3333
+    // category a --> category b
+    // category a --> category c ???
+    private Collection<Integer> getCategoriesWhichHaveSameMccsAsGivenOneInMccPerCategoriesTable(Integer parentCategoryId) {
+        var mccsCollection = mccPerCategoryRepository.findAllByCategoryId(parentCategoryId)
+                .stream()
+                .filter(Objects::nonNull)
+                .map(MccPerCategory::getMcc)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+        // category a
+        // category b
+        // category a --> category b
+        // category b --> category c
+        // category c + mcc=2323
+        // category a + mcc=2323 ???
+
+        // category a
+        // category b
+        // category a --> category b
+        // category b --> category c
+        // category a + mcc=2323
+        // category c + mcc=2323 ???
+
+        return mccPerCategoryRepository.findDistinctCategoryIdsByMccCodes(mccsCollection);
+    }
+
+    private Collection<Integer> getCategoriesWhichHaveSameMccsAsGivenOneInCategoryPerCategoryTable(Integer parentCategoryId) {
+        var allCategoriesById = categoryPerCategoryRepository.findAllByParentCategoryId(parentCategoryId).stream().map(CategoryPerCategory::getChildCategory).toList();
+        if (allCategoriesById.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        var mccsCollection =
+
+        return mccPerCategoryRepository.findDistinctCategoryIdsByMccCodes(mccsCollection);
+    }
+
+    private Collection<String> getMccsByCategoryId(Integer categoryId) {
+        return mccPerCategoryRepository.findAllByCategoryId(categoryId)
+                .stream()
+                .map(MccPerCategory::getMcc)
+                .toList();
     }
 
     /**
@@ -88,6 +159,10 @@ public class CategoryPerCategoryService {
 
         return false;
     }
+
+    // 1 2
+    // 2 3
+    // 3 1
 
     /**
      * Check if there are several same children in the parent category.
