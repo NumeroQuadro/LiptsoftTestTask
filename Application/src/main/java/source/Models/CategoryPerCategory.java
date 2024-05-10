@@ -14,16 +14,19 @@ public class CategoryPerCategory {
     @EmbeddedId
     private CategoryPerCategoryId id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
+    @MapsId("parentCategoryId")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "parent_category_id", nullable = false)
     private Category parentCategory;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
+    @MapsId("childCategoryId")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "child_category_id", nullable = false)
     private Category childCategory;
 
     public CategoryPerCategory(Category parentCategory, Category childCategory) {
         this.parentCategory = parentCategory;
         this.childCategory = childCategory;
+        this.id = new CategoryPerCategoryId(parentCategory.getId(), childCategory.getId());
     }
 }

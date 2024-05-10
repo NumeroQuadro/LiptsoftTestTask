@@ -10,6 +10,7 @@ import source.Repositories.CategoryPerCategoryRepository;
 import source.Repositories.CategoryRepository;
 import source.Repositories.MccPerCategoryRepository;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 
 @Service
@@ -33,6 +34,15 @@ public class CategoryService {
 
     public Category getCategoryByName(String categoryName) {
         return categoryRepository.findByName(categoryName);
+    }
+
+    public void removeCategory(String categoryName) {
+        var category = categoryRepository.findByName(categoryName);
+        if (category == null) {
+            throw new IllegalArgumentException("Unable to delete category with name \"" + categoryName + "\" which is not exists");
+        }
+
+        categoryRepository.delete(category);
     }
 
     public Collection<Category> getAllCategories() {

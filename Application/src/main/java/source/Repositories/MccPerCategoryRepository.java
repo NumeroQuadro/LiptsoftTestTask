@@ -17,9 +17,6 @@ public interface MccPerCategoryRepository extends JpaRepository<MccPerCategory, 
     MccPerCategory findByMcc(String mcc);
     MccPerCategory findByCategoryId(Integer categoryId);
     Collection<MccPerCategory> findAllByCategoryId(Integer categoryId);
-    @Query("SELECT DISTINCT c.id FROM MccPerCategory c WHERE c.mcc IN :mccCodes")
-    List<Integer> findDistinctCategoryIdsByMccCodes(@Param("mccCodes") Collection<String> mccCodes);
-
-    @Query("SELECT DISTINCT c.id FROM CategoryPerCategory c WHERE c.mcc IN :mccCodes")
-    List<Integer> findDistinctCategoryIdsByMccCodes(@Param("mccCodes") Collection<String> mccCodes);
+    @Query("SELECT DISTINCT c.id FROM MccPerCategory c WHERE c.mcc = :mcc")
+    List<Integer> findDistinctCategoryIdsByMccCode(@Param("mcc") String mcc);
 }

@@ -14,15 +14,17 @@ public class MccPerCategory {
     @EmbeddedId
     private MccPerCategoryId id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
+    @MapsId("categoryId")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    @Column(name = "mcc", nullable = false)
+    @Column(name = "mcc", insertable = false, updatable = false)
     private String mcc;
 
     public MccPerCategory(Category category, String mcc) {
         this.category = category;
         this.mcc = mcc;
+        this.id = new MccPerCategoryId(category.getId(), mcc);
     }
 }

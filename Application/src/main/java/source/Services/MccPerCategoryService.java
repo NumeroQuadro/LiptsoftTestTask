@@ -13,9 +13,11 @@ import source.Repositories.CategoryRepository;
 import source.Repositories.MccPerCategoryRepository;
 import source.ResultTypes.OperationResult;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class MccPerCategoryService {
@@ -40,8 +42,25 @@ public class MccPerCategoryService {
         return new OperationResult.Success("Mcc " + mcc + " added to " + category.getName() + " category.");
     }
 
-    public void editCategoryWithNewMcc(String categoryName, String mcc) {
+    /**
+     * Add new mcc code to existing category. Check if category exists, if mcc code is reserved for another category.
+     * @param categoryName category name
+     * @param mcc mcc code
+     */
+    @Transactional
+    public void addNewMccToCategory(String categoryName, String mcc) {
         var category = getCategoryIfExists(categoryName);
+
+        var categoryIdsContainsMccCode = getCategoryIdsWhichContainProvidedMccCode(mcc);
+        if (!categoryIdsContainsMccCode.isEmpty()) {
+            var categoryNames = categoryIdsContainsMccCode.stream()
+                    .map(categoryRepository::findById)
+                    .flatMap(Optional::stream)
+                    .map(Category::getName)
+                    .collect(Collectors.toList());
+
+            throw new IllegalStateException("Mcc " + mcc + " already reserved for categories: " + String.join(", ", categoryNames));
+        }
 
         var mccPerCategory = new MccPerCategory(category, mcc);
         mccPerCategoryRepository.save(mccPerCategory);
@@ -60,5 +79,9 @@ public class MccPerCategoryService {
         var possibleMccPerCategory = mccPerCategoryRepository.findByMcc(mcc);
 
         return possibleMccPerCategory != null;
+    }
+
+    private Collection<Integer> getCategoryIdsWhichContainProvidedMccCode(String mcc) {
+        return mccPerCategoryRepository.findDistinctCategoryIdsByMccCode(mcc);
     }
 }

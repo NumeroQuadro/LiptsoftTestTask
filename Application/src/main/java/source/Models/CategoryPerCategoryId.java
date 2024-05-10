@@ -13,9 +13,9 @@ import java.io.Serializable;
 @Embeddable
 @NoArgsConstructor
 public class CategoryPerCategoryId implements Serializable {
-    @Column(name = "parent_category_id")
+    @Column(name = "parent_category_id", nullable = false)
     private Integer parentCategoryId;
-    @Column(name = "child_category_id")
+    @Column(name = "child_category_id", nullable = false)
     private Integer childCategoryId;
 
     public CategoryPerCategoryId(Integer parentCategoryId, Integer childCategoryId) {

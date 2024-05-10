@@ -12,7 +12,6 @@ import java.util.List;
 
 @Repository
 public interface CategoryPerCategoryRepository extends JpaRepository<CategoryPerCategory, Integer> {
-    CategoryPerCategory findByParentCategoryId(Integer categoryId);
     Collection<CategoryPerCategory> findAllByParentCategoryId(Integer categoryId);
     CategoryPerCategory findByParentCategoryAndChildCategory(Category parentCategory, Category childCategory);
 
