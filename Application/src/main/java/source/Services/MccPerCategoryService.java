@@ -42,11 +42,6 @@ public class MccPerCategoryService {
         return new OperationResult.Success("Mcc " + mcc + " added to " + category.getName() + " category.");
     }
 
-    /**
-     * Add new mcc code to existing category. Check if category exists, if mcc code is reserved for another category.
-     * @param categoryName category name
-     * @param mcc mcc code
-     */
     @Transactional
     public void addNewMccToCategory(String categoryName, String mcc) {
         var category = getCategoryIfExists(categoryName);

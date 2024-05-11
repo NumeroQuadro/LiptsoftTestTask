@@ -1,7 +1,6 @@
 package source.Parsing.AddTransactionCommandParsers;
 
 import org.springframework.stereotype.Component;
-import picocli.CommandLine;
 import source.Parsing.Checkable;
 import source.Parsing.ParsingResults.ParsingResult;
 

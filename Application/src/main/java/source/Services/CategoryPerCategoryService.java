@@ -20,14 +20,6 @@ public class CategoryPerCategoryService {
     @Autowired
     private MccPerCategoryRepository mccPerCategoryRepository;
 
-    /**
-     * Add new category with parent category name and child category name.
-     * Checks if parent category exists,if child category exists,
-     * if child category is reserved for another category and
-     * if there is a cycle in the category tree.
-     * @param parentCategoryName parent category name
-     * @param childCategoryName child category name
-     */
     @Transactional
     public void addGroupToCategory(String parentCategoryName, String childCategoryName) {
         // todo: check if parent and child categories are same
@@ -49,12 +41,6 @@ public class CategoryPerCategoryService {
         categoryPerCategoryRepository.save(categoryPerCategory);
     }
 
-    /**
-     * Check if category exists in all categories table. If not, throw IllegalStateException.
-     * @param categoryName name category to extract
-     * @throws IllegalStateException if category not found
-     * @return Category
-     */
     private Category getCategoryIfExists(String categoryName) {
         var category = categoryRepository.findByName(categoryName);
         if (category == null) {
@@ -64,14 +50,6 @@ public class CategoryPerCategoryService {
         return category;
     }
 
-    /**
-     * Check recursive if there is a cycle in the category tree with the new link.
-     * Start with parent category id and compare all child category ids with
-     * new possible child category id
-     * @param parentCategoryId parent category id
-     * @param possibleChildCategoryId possible child category id
-     * @return boolean
-     */
     private boolean isThereCycleWithNewLink(Integer parentCategoryId, Integer possibleChildCategoryId) {
         var allCategoriesById = categoryPerCategoryRepository.findAllByParentCategoryId(parentCategoryId);
         if (allCategoriesById.isEmpty()) {
@@ -89,15 +67,6 @@ public class CategoryPerCategoryService {
         return false;
     }
 
-    /**
-     * Check if there are several same children in the parent category.
-     * If after adding possible child category to set,
-     * set size is equal to old set size --> there will be same category
-     * ids in the category tree --> there are nested categories
-     * @param parentCategory parent category
-     * @param possibleChildCategory possible child category
-     * @return boolean
-     */
     private boolean isThereNestedCategoryWithSameChildId(Category parentCategory, Category possibleChildCategory) {
         // add all tree items to map and then check if set power equals to list power
         Set<Category> set = new HashSet<>();
@@ -108,12 +77,6 @@ public class CategoryPerCategoryService {
         return set.size() == updatedSetSize;
     }
 
-    /**
-     * Recursive add all categories to map.
-     * @param parentCategoryId parent category id
-     * @param set set of categories to be future filled
-     * @return Set<Category> filled set of categories
-     */
     private Set<Category> recursiveAddCategoriesToMap(Integer parentCategoryId, Set<Category> set) {
         var allCategoriesById = categoryPerCategoryRepository.findAllByParentCategoryId(parentCategoryId);
         for (var categoryPerCategory : allCategoriesById) {
@@ -124,12 +87,6 @@ public class CategoryPerCategoryService {
         return set;
     }
 
-    /**
-     * Get row with by primary key with parent and child category. If exists, return true.
-     * @param parentCategory parent category
-     * @param childCategory child category
-     * @return boolean
-     */
     private boolean isParentCategoryReserved(Category parentCategory, Category childCategory) {
         return categoryPerCategoryRepository.findByParentCategoryAndChildCategory(parentCategory, childCategory) != null;
     }

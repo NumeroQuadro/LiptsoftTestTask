@@ -1,11 +1,13 @@
 package source.Parsing.RemoveCategoryParsers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import source.Parsing.Handleable;
 import source.Parsing.HandlingResults.HandlingResult;
 import source.Parsing.ParsingResults.ParsingResult;
 import source.Services.CategoryService;
 
+@Component
 public class RemoveCategoryHandler implements Handleable<RemoveCategoryCommand> {
     @Autowired
     private RemoveCategoryChecker checker;

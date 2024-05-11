@@ -1,6 +1,7 @@
 package source.CommandLineInterpreters;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import picocli.CommandLine;
 import source.ConsoleMessageHandlers.ConsoleMessagesHandler;
 import source.Interpreters.Interpretable;
@@ -14,7 +15,6 @@ import source.Parsing.AddTransactionCommandParsers.AddTransactionCommand;
 import source.Parsing.AddTransactionCommandParsers.AddTransactionHandler;
 import source.Parsing.HandlingResults.HandlingResult;
 import source.Parsing.MainCommand;
-import source.Parsing.ParsingResults.ParsingResult;
 import source.Parsing.RemoveCategoryParsers.RemoveCategoryCommand;
 import source.Parsing.RemoveCategoryParsers.RemoveCategoryHandler;
 import source.Parsing.ShowAllExpensesByPeriodOfTimeParsers.ShowAllExpensesByPeriodOfTimeCommand;
@@ -24,9 +24,27 @@ import source.Parsing.ShowCategoriesParsers.ShowCategoriesListHandler;
 import source.Parsing.ShowCategoryAmountByPeriodParsers.ShowCategoryAmountByCertainPeriodCommand;
 import source.Parsing.ShowCategoryAmountByPeriodParsers.ShowCategoryAmountByCertainPeriodHandler;
 
+@Component
 public class ConsoleCommandLineInterpreter implements Interpretable {
     @Autowired
+    private AddCategoryCommandHandler addCategoryCommandHandler;
+    @Autowired
     private ConsoleMessagesHandler consoleMessagesHandler;
+    @Autowired
+    private AddGroupToExistingCategoryHandler addGroupToExistingCategoryHandler;
+    @Autowired
+    private AddMccToExistingCategoryHandler addMccToExistingCategoryHandler;
+    @Autowired
+    private RemoveCategoryHandler removeCategoryHandler;
+    @Autowired
+    private ShowCategoriesListHandler showCategoriesListHandler;
+    @Autowired
+    private ShowCategoryAmountByCertainPeriodHandler showCategoryAmountByCertainPeriodHandler;
+    @Autowired
+    private AddTransactionHandler addTransactionHandler;
+    @Autowired
+    private ShowAllExpensesByPeriodOfTimeHandler showAllExpensesByPeriodOfTimeHandler;
+
 
     @Override
     public void processArgumentLines(String[] args) {
@@ -52,28 +70,28 @@ public class ConsoleCommandLineInterpreter implements Interpretable {
 
     private HandlingResult handleCommand(Object command) {
         if (command instanceof AddCategoryCommand addCategoryCommand) {
-            return new AddCategoryCommandHandler().handleCommand(addCategoryCommand);
+            return addCategoryCommandHandler.handleCommand(addCategoryCommand);
         }
         else if (command instanceof AddGroupToExistingCategoryCommand addGroupToExistingCategoryCommand) {
-            return new AddGroupToExistingCategoryHandler().handleCommand(addGroupToExistingCategoryCommand);
+            return addGroupToExistingCategoryHandler.handleCommand(addGroupToExistingCategoryCommand);
         }
         else if (command instanceof AddMccToExistingCategoryCommand addMccToExistingCategoryCommand) {
-            return new AddMccToExistingCategoryHandler().handleCommand(addMccToExistingCategoryCommand);
+            return addMccToExistingCategoryHandler.handleCommand(addMccToExistingCategoryCommand);
         }
         else if (command instanceof RemoveCategoryCommand removeCategoryCommand) {
-            return new RemoveCategoryHandler().handleCommand(removeCategoryCommand);
+            return removeCategoryHandler.handleCommand(removeCategoryCommand);
         }
         else if (command instanceof ShowCategoriesListCommand showCategoriesListCommand) {
-            return new ShowCategoriesListHandler().handleCommand(showCategoriesListCommand);
+            return showCategoriesListHandler.handleCommand(showCategoriesListCommand);
         }
         else if (command instanceof ShowCategoryAmountByCertainPeriodCommand showCategoryAmountByCertainPeriodCommand) {
-            return new ShowCategoryAmountByCertainPeriodHandler().handleCommand(showCategoryAmountByCertainPeriodCommand);
+            return showCategoryAmountByCertainPeriodHandler.handleCommand(showCategoryAmountByCertainPeriodCommand);
         }
         else if (command instanceof AddTransactionCommand addTransactionCommand) {
-            return new AddTransactionHandler().handleCommand(addTransactionCommand);
+            return addTransactionHandler.handleCommand(addTransactionCommand);
         }
         else if (command instanceof ShowAllExpensesByPeriodOfTimeCommand showAllExpensesByPeriodOfTimeCommand) {
-            return new ShowAllExpensesByPeriodOfTimeHandler().handleCommand(showAllExpensesByPeriodOfTimeCommand);
+            return showAllExpensesByPeriodOfTimeHandler.handleCommand(showAllExpensesByPeriodOfTimeCommand);
         }
         else {
             return new HandlingResult.Failure("Unknown command");

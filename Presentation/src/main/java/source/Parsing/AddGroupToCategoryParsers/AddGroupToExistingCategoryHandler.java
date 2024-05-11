@@ -1,11 +1,13 @@
 package source.Parsing.AddGroupToCategoryParsers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import source.Parsing.Handleable;
 import source.Parsing.HandlingResults.HandlingResult;
 import source.Parsing.ParsingResults.ParsingResult;
 import source.Services.CategoryPerCategoryService;
 
+@Component
 public class AddGroupToExistingCategoryHandler implements Handleable<AddGroupToExistingCategoryCommand> {
     @Autowired
     private AddGroupToExistingCategoryChecker checker;

@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import picocli.CommandLine;
+import source.CommandLineInterpreters.ConsoleCommandLineInterpreter;
+import source.ConsoleMessageHandlers.ConsoleMessagesHandler;
 import source.Parsing.AddCategoryParsers.AddCategoryCommand;
 import source.Services.CategoryPerCategoryService;
 import source.Services.CategoryService;
@@ -19,18 +21,16 @@ import java.time.LocalDate;
 
 @SpringBootApplication
 @EnableJpaRepositories(basePackages = {"source.Repositories"})
-@ComponentScan(basePackages = {"source.Services", "source.Models"})
-@ComponentScan(basePackages = {"source.Parsing.AddCategoryParsers"})
+@ComponentScan(basePackages = {"source.Services", "source.Models", "source.Parsing", "source.CommandLineInterpreters", "source.ConsoleMessageHandlers"})
 @EntityScan(basePackages = {"source.Models"})
 public class LiptsoftTestTaskApplication {
     public static void main(String[] args) {
         SpringApplication.run(LiptsoftTestTaskApplication.class, args);
-        String line = "add-category -n Category -m 3333 -m 2222";
-        new CommandLine(new AddCategoryCommand()).execute(line);
+        // todo: before passing arguments to the console command line interpreter, cut first of them
     }
 
     @Bean
-    CommandLineRunner commandLineRunner(TransactionService transactionService, CategoryPerCategoryService categoryPerCategoryService, MccPerCategoryService mccPerCategoryService, CategoryService categoryService) {
+    CommandLineRunner commandLineRunner(ConsoleCommandLineInterpreter consoleCommandLineInterpreter, TransactionService transactionService, CategoryPerCategoryService categoryPerCategoryService, MccPerCategoryService mccPerCategoryService, CategoryService categoryService) {
         return args -> {
 //            categoryService.addNewCategory("1");
 //            categoryService.addNewCategory("2");
@@ -48,6 +48,9 @@ public class LiptsoftTestTaskApplication {
 //            transactionService.addNewTransaction(new BigDecimal(200), LocalDate.of(2023, 12, 3), "3333");
 //            transactionService.addNewTransaction(new BigDecimal(1000), LocalDate.of(2023, 12, 3), "4444");
 //            transactionService.getTransactionsSumByCategoryInRequestedMonth(12).forEach((k, v) -> System.out.println(k + " " + v));
+            String argumentLine = "show-all -p months";
+            String[] splitLine = argumentLine.split(" ");
+            consoleCommandLineInterpreter.processArgumentLines(splitLine);
         };
     }
 }

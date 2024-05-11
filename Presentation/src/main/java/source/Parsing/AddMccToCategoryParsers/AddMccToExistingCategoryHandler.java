@@ -1,11 +1,13 @@
 package source.Parsing.AddMccToCategoryParsers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import source.Parsing.Handleable;
 import source.Parsing.HandlingResults.HandlingResult;
 import source.Parsing.ParsingResults.ParsingResult;
 import source.Services.MccPerCategoryService;
 
+@Component
 public class AddMccToExistingCategoryHandler implements Handleable<AddMccToExistingCategoryCommand> {
     @Autowired
     private AddMccToExistingCategoryChecker checker;

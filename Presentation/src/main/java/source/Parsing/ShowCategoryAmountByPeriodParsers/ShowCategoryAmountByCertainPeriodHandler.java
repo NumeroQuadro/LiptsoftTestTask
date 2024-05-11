@@ -1,19 +1,18 @@
 package source.Parsing.ShowCategoryAmountByPeriodParsers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import source.Parsing.Handleable;
 import source.Parsing.HandlingResults.HandlingResult;
 import source.Parsing.ParsingResults.ParsingResult;
-import source.Services.CategoryService;
 import source.Services.TransactionService;
 
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Locale;
 
+@Component
 public class ShowCategoryAmountByCertainPeriodHandler implements Handleable<ShowCategoryAmountByCertainPeriodCommand> {
     @Autowired
     private ShowCategoryAmountByCertainPeriodChecker checker;
