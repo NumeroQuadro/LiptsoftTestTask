@@ -18,6 +18,7 @@ import source.Services.TransactionService;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Scanner;
 
 @SpringBootApplication
 @EnableJpaRepositories(basePackages = {"source.Repositories"})
@@ -26,7 +27,6 @@ import java.time.LocalDate;
 public class LiptsoftTestTaskApplication {
     public static void main(String[] args) {
         SpringApplication.run(LiptsoftTestTaskApplication.class, args);
-        // todo: before passing arguments to the console command line interpreter, cut first of them
     }
 
     @Bean
@@ -48,9 +48,15 @@ public class LiptsoftTestTaskApplication {
 //            transactionService.addNewTransaction(new BigDecimal(200), LocalDate.of(2023, 12, 3), "3333");
 //            transactionService.addNewTransaction(new BigDecimal(1000), LocalDate.of(2023, 12, 3), "4444");
 //            transactionService.getTransactionsSumByCategoryInRequestedMonth(12).forEach((k, v) -> System.out.println(k + " " + v));
-            String argumentLine = "show-all -p months";
-            String[] splitLine = argumentLine.split(" ");
-            consoleCommandLineInterpreter.processArgumentLines(splitLine);
+            consoleCommandLineInterpreter.processArgumentLines(args);
+
+            while(true) {
+                System.out.println("Enter command:");
+                Scanner scanner = new Scanner(System.in);
+                String argumentLine = scanner.nextLine();
+                String[] splitLine = argumentLine.split(" ");
+                consoleCommandLineInterpreter.processArgumentLines(splitLine);
+            }
         };
     }
 }

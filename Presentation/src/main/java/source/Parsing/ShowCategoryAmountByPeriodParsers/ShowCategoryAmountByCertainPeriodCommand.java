@@ -1,10 +1,12 @@
 package source.Parsing.ShowCategoryAmountByPeriodParsers;
 
 import lombok.Getter;
+import lombok.Setter;
 import picocli.CommandLine;
 import source.Parsing.Commandable;
 
 @Getter
+@Setter
 @CommandLine.Command(name = "show", description = "Show category amount by provided period of time")
 public class ShowCategoryAmountByCertainPeriodCommand implements Commandable {
     @CommandLine.Option(names = {"-n", "--name"}, description = "Name of category", required = true)

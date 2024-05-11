@@ -22,7 +22,10 @@ public class CategoryPerCategoryService {
 
     @Transactional
     public void addGroupToCategory(String parentCategoryName, String childCategoryName) {
-        // todo: check if parent and child categories are same
+        if (parentCategoryName.equals(childCategoryName)) {
+            throw new IllegalStateException("Category " + childCategoryName + " cannot be added to itself.");
+        }
+
         var parentCategory = getCategoryIfExists(parentCategoryName);
         var childCategory = getCategoryIfExists(childCategoryName);
         if (isParentCategoryReserved(parentCategory, childCategory)) {

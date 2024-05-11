@@ -49,22 +49,35 @@ public class ConsoleCommandLineInterpreter implements Interpretable {
     @Override
     public void processArgumentLines(String[] args) {
         CommandLine commandLine = new CommandLine(new MainCommand());
-        CommandLine.ParseResult parseResult = commandLine.parseArgs(args);
+        commandLine.setUsageHelpWidth(100);
+        commandLine.setColorScheme(new CommandLine.Help.ColorScheme.Builder()
+                .commands(CommandLine.Help.Ansi.Style.fg_yellow)
+                .options(CommandLine.Help.Ansi.Style.fg_green)
+                .parameters(CommandLine.Help.Ansi.Style.fg_cyan)
+                .optionParams(CommandLine.Help.Ansi.Style.italic)
+                .build());
 
-        if (!parseResult.hasSubcommand()) {
-            consoleMessagesHandler.handleFailureMessage(commandLine.getUsageMessage());
-            return;
+        try {
+            CommandLine.ParseResult parseResult = commandLine.parseArgs(args);
+
+            if (!parseResult.hasSubcommand()) {
+                consoleMessagesHandler.handleFailureMessage(commandLine.getUsageMessage());
+                return;
+            }
+
+            CommandLine.ParseResult subResult = parseResult.subcommand();
+            var command = subResult.commandSpec().userObject();
+            var handlingResult = handleCommand(command);
+
+            if (handlingResult instanceof HandlingResult.Success success) {
+                consoleMessagesHandler.handleSuccessMessage(success.getSuccessMessage());
+            }
+            else if (handlingResult instanceof HandlingResult.Failure failure) {
+                consoleMessagesHandler.handleFailureMessage(failure.getFailureMessage());
+            }
         }
-
-        CommandLine.ParseResult subResult = parseResult.subcommand();
-        var command = subResult.commandSpec().userObject();
-        var handlingResult = handleCommand(command);
-
-        if (handlingResult instanceof HandlingResult.Success success) {
-            consoleMessagesHandler.handleSuccessMessage(success.getSuccessMessage());
-        }
-        else if (handlingResult instanceof HandlingResult.Failure failure) {
-            consoleMessagesHandler.handleFailureMessage(failure.getFailureMessage());
+        catch (CommandLine.ParameterException e) {
+            consoleMessagesHandler.handleFailureMessage(e.getMessage());
         }
     }
 

@@ -1,6 +1,7 @@
 package source.Parsing.AddCategoryParsers;
 
 import lombok.Getter;
+import lombok.Setter;
 import picocli.CommandLine;
 import source.Parsing.Commandable;
 
@@ -12,6 +13,7 @@ import java.util.Collection;
  * @see Commandable
  */
 @Getter
+@Setter
 @CommandLine.Command(name = "add-category", description = "Add category to the database")
 public class AddCategoryCommand implements Commandable {
     @CommandLine.Option(names = {"-n", "--name"}, description = "Name of category", required = true)

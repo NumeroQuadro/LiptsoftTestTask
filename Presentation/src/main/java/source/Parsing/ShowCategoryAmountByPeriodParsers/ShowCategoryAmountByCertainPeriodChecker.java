@@ -1,5 +1,6 @@
 package source.Parsing.ShowCategoryAmountByPeriodParsers;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import source.Parsing.Checkable;
 import source.Parsing.ParsingResults.ParsingResult;
@@ -10,10 +11,11 @@ import java.util.List;
 
 @Component
 public class ShowCategoryAmountByCertainPeriodChecker implements Checkable<ShowCategoryAmountByCertainPeriodCommand> {
+    @Autowired
+    private PermittedPeriodsConfiguration permittedPeriodsConfiguration;
     @Override
     public ParsingResult checkCommand(ShowCategoryAmountByCertainPeriodCommand command) {
-        List<String> allowedPeriods = new ArrayList<>(List.of("months"));
-        // todo: extract value for allowedPeriods from Configuration file
+        Collection<String> allowedPeriods = permittedPeriodsConfiguration.getPeriods();
 
         if (command.getCategoryName() == null) {
             return new ParsingResult.Failure("Category name is not specified");

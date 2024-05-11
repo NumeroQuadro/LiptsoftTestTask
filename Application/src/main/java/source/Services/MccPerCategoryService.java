@@ -29,17 +29,25 @@ public class MccPerCategoryService {
     private MccPerCategoryRepository mccPerCategoryRepository;
 
     @Transactional
-    public OperationResult addNewCategoryWithMcc(String categoryName, String mcc) {
-        var category = getCategoryIfExists(categoryName);
+    public OperationResult addNewCategoryWithMcc(String categoryName, Collection<String> mccs) {
+        Category category = categoryRepository.findByName(categoryName);
 
-        if (mccIsReserved(mcc)) {
-            throw new IllegalStateException("Mcc " + mcc + " already reserved for another category.");
+        if (category == null) {
+            category = new Category();
+            category.setName(categoryName);
+            categoryRepository.save(category);
         }
 
-        var mccPerCategory = new MccPerCategory(category, mcc);
-        mccPerCategoryRepository.save(mccPerCategory);
+        for (var mcc : mccs) {
+            if (mccPerCategoryRepository.findByMcc(mcc) != null) {
+                return new OperationResult.Failure("Mcc " + mcc + " already reserved for another category.");
+            }
 
-        return new OperationResult.Success("Mcc " + mcc + " added to " + category.getName() + " category.");
+            MccPerCategory mccPerCategory = new MccPerCategory(category, mcc);
+            mccPerCategoryRepository.save(mccPerCategory);
+        }
+
+        return new OperationResult.Success("Mccs " + mccs + " added to " + category.getName() + " category.");
     }
 
     @Transactional

@@ -28,10 +28,7 @@ public class AddCategoryCommandHandler implements Handleable<AddCategoryCommand>
         }
 
         try {
-            categoryService.addNewCategory(command.getCategoryName());
-            for (var mcc : command.getMccs()) {
-                mccPerCategoryService.addNewMccToCategory(command.getCategoryName(), mcc);
-            }
+            mccPerCategoryService.addNewCategoryWithMcc(command.getCategoryName(), command.getMccs());
 
             return new HandlingResult.Success("Category added successfully");
         }

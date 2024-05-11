@@ -14,10 +14,7 @@ import source.Repositories.CategoryRepository;
 import source.Repositories.MccPerCategoryRepository;
 import source.ResultTypes.OperationResult;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -41,31 +38,39 @@ class MccPerCategoryServiceTests {
     @Test
     void testAddNewCategoryWithMcc_Success() {
         String categoryName = "Electronics";
-        String mcc = "1234";
-        Category category = new Category();
-        category.setName(categoryName);
+        List<String> mccs = Collections.singletonList("1234");
 
-        when(categoryRepository.findByName(categoryName)).thenReturn(category);
-        when(mccPerCategoryRepository.findByMcc(mcc)).thenReturn(null);
+        when(categoryRepository.findByName(categoryName)).thenReturn(null);
+        when(mccPerCategoryRepository.findByMcc("1234")).thenReturn(null);
+        when(categoryRepository.save(any(Category.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        OperationResult result = mccPerCategoryService.addNewCategoryWithMcc(categoryName, mcc);
+        when(categoryRepository.findByName(categoryName)).thenReturn(null);
+        when(mccPerCategoryRepository.findByMcc(mccs.get(0))).thenReturn(null);
+        when(categoryRepository.save(any(Category.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        OperationResult result = mccPerCategoryService.addNewCategoryWithMcc(categoryName, mccs);
 
         assertInstanceOf(OperationResult.Success.class, result);
-        assertEquals("Mcc 1234 added to Electronics category.", ((OperationResult.Success) result).getSuccessMessage());
+        assertEquals("Mccs [1234] added to Electronics category.", ((OperationResult.Success) result).getSuccessMessage());
+        verify(categoryRepository).save(any(Category.class));
         verify(mccPerCategoryRepository).save(any(MccPerCategory.class));
     }
+
 
     @Test
     void testAddNewCategoryWithMcc_MccReserved() {
         String categoryName = "Electronics";
-        String mcc = "1234";
+        List<String> mccs = Arrays.asList("1234", "5678");
         Category category = new Category();
         category.setName(categoryName);
 
         when(categoryRepository.findByName(categoryName)).thenReturn(category);
-        when(mccPerCategoryRepository.findByMcc(mcc)).thenReturn(new MccPerCategory());
+        when(mccPerCategoryRepository.findByMcc("1234")).thenReturn(new MccPerCategory());
 
-        assertThrows(IllegalStateException.class, () -> mccPerCategoryService.addNewCategoryWithMcc(categoryName, mcc));
+        OperationResult result = mccPerCategoryService.addNewCategoryWithMcc(categoryName, mccs);
+
+        assertTrue(result instanceof OperationResult.Failure);
+        assertEquals("Mcc 1234 already reserved for another category.", ((OperationResult.Failure) result).getFailureMessage());
     }
 
     @Test
