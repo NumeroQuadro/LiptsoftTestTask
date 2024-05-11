@@ -2,6 +2,8 @@ package source;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.context.annotation.ComponentScan;
 import picocli.CommandLine;
 import source.Parsing.MainCommand;
 
@@ -9,11 +11,6 @@ import source.Parsing.MainCommand;
 public class PresentationApplication {
     public static void main(String[] args) {
         SpringApplication.run(PresentationApplication.class, args);
-        String line = "show -n Food -p years";
-        var splitLine = line.split(" ");
-
-        CommandLine commandLine = new CommandLine(new MainCommand());
-        commandLine.execute(splitLine);
     }
 }
 

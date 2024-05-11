@@ -22,6 +22,7 @@ public class CategoryService {
     @Autowired
     private MccPerCategoryRepository mccPerCategoryRepository;
 
+    @Transactional
     public void addNewCategory(String categoryName) {
         var possibleCategory = getCategoryByName(categoryName);
         if (possibleCategory != null) {
