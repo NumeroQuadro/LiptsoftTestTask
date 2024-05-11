@@ -3,6 +3,7 @@ package source.Services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
+import source.Models.Category;
 import source.Models.Transaction;
 import source.Repositories.CategoryPerCategoryRepository;
 import source.Repositories.CategoryRepository;
@@ -51,20 +52,41 @@ public class TransactionService {
     }
 
     public Map<String, BigDecimal> getTransactionsSumByCategoryInRequestedMonth(int month) {
-        // todo: make another recursive method and run it for every nested category firsly
-        var transactions = transactionRepository.findByMonth(month);
         Map<String, BigDecimal> result = new HashMap<>();
 
-        for (var transaction : transactions) {
-            var mcc = transaction.getMcc();
-            var category = mccPerCategoryRepository.findByMcc(mcc);
-            if (category != null) {
-                var categoryName = category.getCategory().getName();
-                var amount = transaction.getAmount();
-                result.put(categoryName, result.getOrDefault(categoryName, BigDecimal.ZERO).add(amount));
-            }
+        var categories = categoryRepository.findAll();
+        for (var category : categories) {
+            var sum = getSumOfAllTransactionsWithProvidedCategoryWithNestedChildrenPerMonth(category.getId(), month);
+            result.put(category.getName(), sum);
         }
 
         return result;
+    }
+
+    private BigDecimal getSumOfAllTransactionsWithProvidedCategoryWithNestedChildrenPerMonth(Integer categoryId, int month) {
+        var sum = BigDecimal.ZERO;
+
+        var nestedCategories = categoryPerCategoryRepository.findAllByParentCategoryId(categoryId);
+
+
+        for (var nestedCategory : nestedCategories) {
+            sum = sum.add(getSumOfAllTransactionsWithProvidedCategoryWithNestedChildrenPerMonth(nestedCategory.getChildCategory().getId(), month));
+        }
+
+        sum = sum.add(getSumOfTransactionsWithProvidedCategory(categoryId, month));
+
+        return sum;
+    }
+
+    private BigDecimal getSumOfTransactionsWithProvidedCategory(Integer categoryId, int month) {
+        var sum = BigDecimal.ZERO;
+
+        var mccs = mccPerCategoryRepository.findAllByCategoryId(categoryId);
+        for (var mcc : mccs) {
+            var transactions = transactionRepository.findByMonthWithProvidedMcc(month, mcc.getMcc());
+            sum = transactions.stream().map(Transaction::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+        }
+
+        return sum;
     }
 }
