@@ -17,51 +17,51 @@ View spending by category or track monthly expenses to better understand your fi
 **Key Operations**:
 - **Add category to the database**: `add-category`
 
-    add-category -n=&lt;categoryName&gt; -m=&lt;mccs&gt;[,&lt;mccs&gt;...]
+    _add-category -n=&lt;categoryName&gt; -m=&lt;mccs&gt;[,&lt;mccs&gt;...]_
 
-   -m, --mcc=&lt;mccs&gt;[,&lt;mccs&gt;...]: MCC codes of the transaction
+   _-m, --mcc=&lt;mccs&gt;[,&lt;mccs&gt;...]: MCC codes of the transaction_
 
-   -n, --name=&lt;categoryName&gt;: Name of category
+   _-n, --name=&lt;categoryName&gt;: Name of category_
 
 - **Add group to existing category**: `add-group`
 
-  add-group -n=&lt;categoryName&gt; -c=&lt;categories&gt;[,&lt;categories&gt;...]
+  _add-group -n=&lt;categoryName&gt; -c=&lt;categories&gt;[,&lt;categories&gt;...]_
   
-  -c, --category=&lt;categories&gt;[,&lt;categories&gt;...]: Categories to add
+  _-c, --category=&lt;categories&gt;[,&lt;categories&gt;...]: Categories to add_
 
-  -n, --name=&lt;categoryName&gt;: Name of category
+  _-n, --name=&lt;categoryName&gt;: Name of category_
 
 - **Add MCC to existing category**: `add-mcc`
 
-  add-mcc -n=&lt;categoryName&gt; -m=&lt;mccs&gt;[,&lt;mccs&gt;...]
+  _add-mcc -n=&lt;categoryName&gt; -m=&lt;mccs&gt;[,&lt;mccs&gt;...]_
 
-  -m, --mcc=&lt;mccs&gt;[,&lt;mccs&gt;...]: MCC codes of the transaction
+  _-m, --mcc=&lt;mccs&gt;[,&lt;mccs&gt;...]: MCC codes of the transaction_
 
-  -n, --name=&lt;categoryName&gt;: Name of category
+  _-n, --name=&lt;categoryName&gt;: Name of category_
 
 
 - **Add transaction to a database**: `add-transaction`
 
-  add-transaction -a=&lt;amount&gt; -d=&lt;date&gt; [-m=&lt;mcc&gt;]
+  _add-transaction -a=&lt;amount&gt; -d=&lt;date&gt; [-m=&lt;mcc&gt;]_
 
-  -a, --amount=&lt;amount&gt;: Amount of transaction
+  _-a, --amount=&lt;amount&gt;: Amount of transaction_
 
-  -d, --date=&lt;date&gt;: Date of transaction
+  _-d, --date=&lt;date&gt;: Date of transaction_
 
-  -m, --mcc=&lt;mcc&gt;: MCC of transaction
+  _-m, --mcc=&lt;mcc&gt;: MCC of transaction_
 
 - **Remove category from the database**: `remove-category`
 
-  -n, --name=&lt;categoryName&gt;: Name of category
+  _-n, --name=&lt;categoryName&gt;: Name of category_
 
 - **Show category amount by period of time**: `show-all`
 
-  -p, --period=&lt;period&gt;: Period to show stats (months)
+  _-p, --period=&lt;period&gt;: Period to show stats (months)_
 
 - **Show list of categories**: `show-categories`
 
 - **Show category amount by provided period of time**: `show`
 
-  -n, --name=&lt;categoryName&gt;: Name of category
+  _-n, --name=&lt;categoryName&gt;: Name of category_
 
-  -p, --period=&lt;period&gt;: Period to show stats (months)
+  _-p, --period=&lt;period&gt;: Period to show stats (months)_
