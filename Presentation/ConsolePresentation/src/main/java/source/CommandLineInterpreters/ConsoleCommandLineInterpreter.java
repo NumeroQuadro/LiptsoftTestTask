@@ -49,13 +49,6 @@ public class ConsoleCommandLineInterpreter implements Interpretable {
     @Override
     public void processArgumentLines(String[] args) {
         CommandLine commandLine = new CommandLine(new MainCommand());
-        commandLine.setUsageHelpWidth(100);
-        commandLine.setColorScheme(new CommandLine.Help.ColorScheme.Builder()
-                .commands(CommandLine.Help.Ansi.Style.fg_yellow)
-                .options(CommandLine.Help.Ansi.Style.fg_green)
-                .parameters(CommandLine.Help.Ansi.Style.fg_cyan)
-                .optionParams(CommandLine.Help.Ansi.Style.italic)
-                .build());
 
         try {
             CommandLine.ParseResult parseResult = commandLine.parseArgs(args);
