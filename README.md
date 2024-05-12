@@ -1,89 +1,66 @@
-1. Блокнот трат
-   Написать программу, для ведения личных трат.
-   Цель иметь удобную инструмент для аналитики куда уходят деньги.
-   Например, видеть распределение трат по категориям.
+**The Expense Tracker** 
+
+The Expense Tracker - is a user-friendly tool designed to help 
+you manage and analyze your personal expenses. 
+It allows you to categorize and track where your money goes each month, 
+giving you insights into your spending habits.
 
 
-`Mcc` должен быть только в одной категории - по сути читаемое имя для кода
-Категории могут быть вложены одна в другую, много-ко-многим, без циклов.
+**Features**:
+- **Categorize Expenses**:
+Organize your expenditures by categories and subcategories without overlapping.
+- **Track Transactions**: 
+Log every expense under appropriate categories with details such as amount and date.
+- **Analyze Spending**: 
+View spending by category or track monthly expenses to better understand your financial habits.
 
+**Key Operations**:
+- **Add category to the database:**
 
-Пример:
-Рестораны: 5811, 5812, 5813
-Фастфуд: 5814
-Супермаркеты: 5297, 5298
+   -m, --mcc=&lt;mccs&gt;[,&lt;mccs&gt;...]: MCC codes of the transaction
 
+   -n, --name=&lt;categoryName&gt;: Name of category
 
-Еда: Рестораны, Фастфуд, Супермаркеты
-Развлечения: 7911, 7922, Рестораны
+- **Add group to existing category**
 
+  -c, --category=&lt;categories&gt;[,&lt;categories&gt;...]: Categories to add
 
-**Обозначения**
-`<abc>` - обязательное поле
-`[xyz]` - опциональное поле
-`mcc` - 4 цифры - код операции
-`category` - текстовое поле
+  -n, --name=&lt;categoryName&gt;: Name of category
 
+- **Add MCC to existing category**
 
-Доступные команды:
-1. Добавить категорию трат
-   `add category <name> <mcc> [mcc2] [mcc3] ...`
-   ответ: `created new category "name" (list of mcc)`
-   ответ: `mcc already reserved for category "another name"` - если такой mcc код уже в другой категории
+  -m, --mcc=&lt;mccs&gt;[,&lt;mccs&gt;...]: MCC codes of the transaction
 
+  -n, --name=&lt;categoryName&gt;: Name of category
 
-2. Изменить категорию трат (если с таким именем уже есть)
-   `add mcc to category <name> <mcc> [mcc2] [mcc3] ...`
-   ответ: `added new mcc to category name (list of mcc)`
-   ответ: `mcc already reserved for category "another name"` - если такой `mcc` код уже в другой категории
+  add-transaction -a=&lt;amount&gt; -d=&lt;date&gt; [-m=&lt;mcc&gt;]
 
+- **Add transaction to a database**
 
-3. Изменить категорию трат
-   `add group to category <name> <category to add> [category to add] ...` - добавить всю категорию в категорию
-   ответ: `added new group to category name (list of mcc) (list of categories)`
+  -a, --amount=&lt;amount&gt;: Amount of transaction
 
+  -d, --date=&lt;date&gt;: Date of transaction
 
-4. Удалить
-   `remove category <name>`
-   ответ: `category removed from (list of categories)`
+  -m, --mcc=&lt;mcc&gt;: MCC of transaction
 
+- **Remove category from the database**
 
-2. Добавить трату
-   `add transaction <name> <value> <month> [mcc]`
-   ответ: `transaction added into category name (list of categories)`
+  -n, --name=&lt;categoryName&gt;: Name of category
 
+  show-all [-p=&lt;period&gt;]
 
-3. Удалить трату
-   `remove transaction <name> <value> <month> - первую подходящую если несколько`
-   ответ: `transaction deleted`
+- **Show category amount by period of time**
 
+  -p, --period=&lt;period&gt;: Period to show stats (months, years)
 
-4. Список категорий
-   `show categories`
-   ответ:
-   `Еда
-   Развлечения
-   Фастфуд
-   Рестораны`
+  show-categories
 
+- **Show list of categories**
 
-5. Траты в категориях в выбранный месяц (сумма за месяц)
-   `show <category name> by months`
-   ответ:
-   `Еда 700р 70%
-   Развлечения 700р 70%
-   Фастфуд 300р 30%
-   Рестораны 400р 40%
-   Без категории 0р 0%`
+  show -n=&lt;categoryName&gt; [-p=&lt;period&gt;]
 
+- **Show category amount by provided period of time**
 
-5. Траты в категории по месяцам (сумма за месяц)
-   show <category name> by months
-   ответ:
-   январь 1000р
-   февраль 1100р
-   март 900р
+  -n, --name=&lt;categoryName&gt;: Name of category
 
-
-Форматы запросов, ответов и операции могут отличаться при желании, но функционал должен быть и пользоваться должно быть удобно.
-Данные желательно сохранять между запусками программы.
+  -p, --period=&lt;period&gt;: Period to show stats (months, years)
