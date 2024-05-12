@@ -15,27 +15,34 @@ Log every expense under appropriate categories with details such as amount and d
 View spending by category or track monthly expenses to better understand your financial habits.
 
 **Key Operations**:
-- **Add category to the database:**
+- **Add category to the database**: `add-category`
+
+    add-category -n=&lt;categoryName&gt; -m=&lt;mccs&gt;[,&lt;mccs&gt;...]
 
    -m, --mcc=&lt;mccs&gt;[,&lt;mccs&gt;...]: MCC codes of the transaction
 
    -n, --name=&lt;categoryName&gt;: Name of category
 
-- **Add group to existing category**
+- **Add group to existing category**: `add-group`
 
+  add-group -n=&lt;categoryName&gt; -c=&lt;categories&gt;[,&lt;categories&gt;...]
+  
   -c, --category=&lt;categories&gt;[,&lt;categories&gt;...]: Categories to add
 
   -n, --name=&lt;categoryName&gt;: Name of category
 
-- **Add MCC to existing category**
+- **Add MCC to existing category**: `add-mcc`
+
+  add-mcc -n=&lt;categoryName&gt; -m=&lt;mccs&gt;[,&lt;mccs&gt;...]
 
   -m, --mcc=&lt;mccs&gt;[,&lt;mccs&gt;...]: MCC codes of the transaction
 
   -n, --name=&lt;categoryName&gt;: Name of category
 
-  add-transaction -a=&lt;amount&gt; -d=&lt;date&gt; [-m=&lt;mcc&gt;]
 
-- **Add transaction to a database**
+- **Add transaction to a database**: `add-transaction`
+
+  add-transaction -a=&lt;amount&gt; -d=&lt;date&gt; [-m=&lt;mcc&gt;]
 
   -a, --amount=&lt;amount&gt;: Amount of transaction
 
@@ -43,23 +50,17 @@ View spending by category or track monthly expenses to better understand your fi
 
   -m, --mcc=&lt;mcc&gt;: MCC of transaction
 
-- **Remove category from the database**
+- **Remove category from the database**: `remove-category`
 
   -n, --name=&lt;categoryName&gt;: Name of category
 
-  show-all [-p=&lt;period&gt;]
-
-- **Show category amount by period of time**
+- **Show category amount by period of time**: `show-all`
 
   -p, --period=&lt;period&gt;: Period to show stats (months)
 
-  show-categories
+- **Show list of categories**: `show-categories`
 
-- **Show list of categories**
-
-  show -n=&lt;categoryName&gt; [-p=&lt;period&gt;]
-
-- **Show category amount by provided period of time**
+- **Show category amount by provided period of time**: `show`
 
   -n, --name=&lt;categoryName&gt;: Name of category
 
