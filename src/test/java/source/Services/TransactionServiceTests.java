@@ -102,7 +102,7 @@ class TransactionServiceTests {
         electronics.setName("Electronics");
 
         when(categoryRepository.findAll()).thenReturn(List.of(electronics));
-        when(categoryPerCategoryRepository.findAllByParentCategoryId(1)).thenReturn(new ArrayList<>()); // No nested categories
+        when(categoryPerCategoryRepository.findAllByParentCategoryId(1)).thenReturn(new ArrayList<>());
         when(mccPerCategoryRepository.findAllByCategoryId(1)).thenReturn(List.of(new MccPerCategory(electronics, "1234")));
 
         List<Transaction> transactions = Arrays.asList(

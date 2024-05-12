@@ -2,7 +2,6 @@ package source.Parsing.AddCategoryParsers;
 
 import org.springframework.stereotype.Component;
 import source.Parsing.Checkable;
-import source.Parsing.Commandable;
 import source.Parsing.ParsingResults.ParsingResult;
 
 @Component

@@ -2,9 +2,7 @@ package source.Services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
-import source.Models.Category;
 import source.Models.Transaction;
 import source.Repositories.CategoryPerCategoryRepository;
 import source.Repositories.CategoryRepository;
@@ -13,7 +11,6 @@ import source.Repositories.TransactionRepository;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;

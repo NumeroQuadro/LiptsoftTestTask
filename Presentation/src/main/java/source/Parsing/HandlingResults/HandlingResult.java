@@ -1,8 +1,6 @@
 package source.Parsing.HandlingResults;
 
 import lombok.Getter;
-import source.Parsing.Commandable;
-import source.Parsing.ParsingResults.ParsingResult;
 
 public class HandlingResult {
     private HandlingResult() {

@@ -1,21 +1,15 @@
 package source.Services;
 
-import jdk.dynalink.Operation;
-import org.antlr.v4.runtime.misc.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import source.Models.Category;
 import source.Models.MccPerCategory;
-import source.Models.MccPerCategoryId;
 import source.Repositories.CategoryPerCategoryRepository;
 import source.Repositories.CategoryRepository;
 import source.Repositories.MccPerCategoryRepository;
-import source.ResultTypes.OperationResult;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 

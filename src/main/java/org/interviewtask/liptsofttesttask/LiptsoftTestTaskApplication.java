@@ -8,10 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import source.CommandLineInterpreters.ConsoleCommandLineInterpreter;
-import source.Services.CategoryPerCategoryService;
-import source.Services.CategoryService;
-import source.Services.MccPerCategoryService;
-import source.Services.TransactionService;
 
 import java.util.Scanner;
 
@@ -25,7 +21,7 @@ public class LiptsoftTestTaskApplication {
     }
 
     @Bean
-    CommandLineRunner commandLineRunner(ConsoleCommandLineInterpreter consoleCommandLineInterpreter, TransactionService transactionService, CategoryPerCategoryService categoryPerCategoryService, MccPerCategoryService mccPerCategoryService, CategoryService categoryService) {
+    CommandLineRunner commandLineRunner(ConsoleCommandLineInterpreter consoleCommandLineInterpreter) {
         return args -> {
             while(true) {
                 System.out.println("Enter command:");

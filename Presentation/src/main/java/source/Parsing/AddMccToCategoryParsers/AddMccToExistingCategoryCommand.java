@@ -7,7 +7,6 @@ import source.Parsing.Commandable;
 
 import java.util.Collection;
 
-// add mcc to category <name> <mcc> [mcc2] [mcc3] ...
 @Getter
 @Setter
 @CommandLine.Command(name = "add-mcc", description = "Add MCC to existing category")

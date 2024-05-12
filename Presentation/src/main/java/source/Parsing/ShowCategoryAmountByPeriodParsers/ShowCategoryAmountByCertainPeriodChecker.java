@@ -5,9 +5,7 @@ import org.springframework.stereotype.Component;
 import source.Parsing.Checkable;
 import source.Parsing.ParsingResults.ParsingResult;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 @Component
 public class ShowCategoryAmountByCertainPeriodChecker implements Checkable<ShowCategoryAmountByCertainPeriodCommand> {

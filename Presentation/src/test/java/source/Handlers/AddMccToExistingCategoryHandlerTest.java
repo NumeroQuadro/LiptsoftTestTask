@@ -16,7 +16,6 @@ import source.Parsing.ParsingResults.ParsingResult;
 import source.Services.MccPerCategoryService;
 
 import java.util.Arrays;
-import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 class AddMccToExistingCategoryHandlerTest {

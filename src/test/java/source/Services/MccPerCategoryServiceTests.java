@@ -13,7 +13,6 @@ import source.Models.MccPerCategory;
 import source.Repositories.CategoryPerCategoryRepository;
 import source.Repositories.CategoryRepository;
 import source.Repositories.MccPerCategoryRepository;
-import source.ResultTypes.OperationResult;
 
 import java.util.*;
 
@@ -27,8 +26,6 @@ import static org.mockito.Mockito.when;
 class MccPerCategoryServiceTests {
     @MockBean
     private CategoryRepository categoryRepository;
-    @MockBean
-    private CategoryPerCategoryRepository categoryPerCategoryRepository;
     @MockBean
     private MccPerCategoryRepository mccPerCategoryRepository;
 
@@ -103,7 +100,7 @@ class MccPerCategoryServiceTests {
         String mcc = "5678";
         Category category = new Category();
         category.setName(categoryName);
-        List<Integer> categoryIds = Arrays.asList(1, 2);  // Assume these categories already use the MCC
+        List<Integer> categoryIds = Arrays.asList(1, 2);
 
         when(categoryRepository.findByName(categoryName)).thenReturn(category);
         when(mccPerCategoryRepository.findDistinctCategoryIdsByMccCode(mcc)).thenReturn(categoryIds);

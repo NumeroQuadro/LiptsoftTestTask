@@ -1,9 +1,7 @@
 package source.Parsing.AddCategoryParsers;
 
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import source.Parsing.Commandable;
 import source.Parsing.Handleable;
 import source.Parsing.HandlingResults.HandlingResult;
 import source.Parsing.ParsingResults.ParsingResult;
@@ -14,8 +12,6 @@ import source.Services.MccPerCategoryService;
 public class AddCategoryCommandHandler implements Handleable<AddCategoryCommand> {
     @Autowired
     private AddCategoryCommandChecker checker;
-    @Autowired
-    private CategoryService categoryService;
     @Autowired
     private MccPerCategoryService mccPerCategoryService;
 

@@ -7,7 +7,6 @@ import source.Parsing.Commandable;
 
 import java.util.Collection;
 
-// add-group -n <category_name> -c <category_to_add> [-c <category to add>] ...
 @Getter
 @Setter
 @CommandLine.Command(name = "add-group", description = "Add group to existing category")

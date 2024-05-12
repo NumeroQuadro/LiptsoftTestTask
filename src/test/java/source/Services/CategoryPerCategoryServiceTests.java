@@ -15,7 +15,6 @@ import source.Repositories.CategoryRepository;
 import source.Repositories.MccPerCategoryRepository;
 
 import java.util.Collections;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -28,16 +27,10 @@ class CategoryPerCategoryServiceTests {
     private CategoryRepository categoryRepository;
     @MockBean
     private CategoryPerCategoryRepository categoryPerCategoryRepository;
-    @MockBean
-    private MccPerCategoryRepository mccPerCategoryRepository;
 
     @Autowired
     @InjectMocks
     private CategoryPerCategoryService categoryPerCategoryService;
-
-    @Autowired
-    @InjectMocks
-    private CategoryService categoryService;
 
     @Test
     void testAddGroupToCategory_ThrowsIfParentCategoryDoesNotExist() {

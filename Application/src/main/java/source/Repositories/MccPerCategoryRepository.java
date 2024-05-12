@@ -12,10 +12,7 @@ import java.util.List;
 
 @Repository
 public interface MccPerCategoryRepository extends JpaRepository<MccPerCategory, Integer> {
-    MccPerCategory findById(MccPerCategoryId id);
-    boolean existsById(MccPerCategoryId id);
     MccPerCategory findByMcc(String mcc);
-    MccPerCategory findByCategoryId(Integer categoryId);
     Collection<MccPerCategory> findAllByCategoryId(Integer categoryId);
     @Query("SELECT DISTINCT c.id FROM MccPerCategory c WHERE c.mcc = :mcc")
     List<Integer> findDistinctCategoryIdsByMccCode(@Param("mcc") String mcc);

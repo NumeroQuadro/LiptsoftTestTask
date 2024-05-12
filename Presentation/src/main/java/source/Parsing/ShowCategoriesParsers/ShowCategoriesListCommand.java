@@ -1,6 +1,5 @@
 package source.Parsing.ShowCategoriesParsers;
 
-import lombok.Getter;
 import picocli.CommandLine;
 import source.Parsing.Commandable;
 
