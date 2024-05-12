@@ -38,16 +38,18 @@ public class MccPerCategoryService {
             categoryRepository.save(category);
         }
 
+        var addedCategory = categoryRepository.findByName(categoryName);
+
         for (var mcc : mccs) {
             if (mccPerCategoryRepository.findByMcc(mcc) != null) {
                 return new OperationResult.Failure("Mcc " + mcc + " already reserved for another category.");
             }
 
-            MccPerCategory mccPerCategory = new MccPerCategory(category, mcc);
+            MccPerCategory mccPerCategory = new MccPerCategory(addedCategory, mcc);
             mccPerCategoryRepository.save(mccPerCategory);
         }
 
-        return new OperationResult.Success("Mccs " + mccs + " added to " + category.getName() + " category.");
+        return new OperationResult.Success("Mccs " + mccs + " added to " + addedCategory.getName() + " category.");
     }
 
     @Transactional
