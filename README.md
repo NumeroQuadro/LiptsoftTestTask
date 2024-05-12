@@ -63,4 +63,4 @@ View spending by category or track monthly expenses to better understand your fi
 
   -n, --name=&lt;categoryName&gt;: Name of category
 
-  -p, --period=&lt;period&gt;: Period to show stats (months, years)
+  -p, --period=&lt;period&gt;: Period to show stats (months)
