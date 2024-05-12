@@ -1,5 +1,6 @@
 package source.Services;
 
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -8,11 +9,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import source.Models.Category;
+import source.Models.CategoryPerCategory;
 import source.Repositories.CategoryPerCategoryRepository;
 import source.Repositories.CategoryRepository;
 import source.Repositories.MccPerCategoryRepository;
 
+import java.util.Collections;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -28,6 +34,10 @@ class CategoryPerCategoryServiceTests {
     @Autowired
     @InjectMocks
     private CategoryPerCategoryService categoryPerCategoryService;
+
+    @Autowired
+    @InjectMocks
+    private CategoryService categoryService;
 
     @Test
     void testAddGroupToCategory_ThrowsIfParentCategoryDoesNotExist() {
@@ -59,4 +69,41 @@ class CategoryPerCategoryServiceTests {
                 "Category \"NonExistent\" not found. Impossible to add category to non-existent category.");
     }
 
+    @Test
+    @Transactional
+    void testCycleDetection() {
+        Category parent = new Category();
+        parent.setId(1);
+        Category child = new Category();
+        child.setId(2);
+
+        when(categoryRepository.findByName("Parent")).thenReturn(parent);
+        when(categoryRepository.findByName("Child")).thenReturn(child);
+        when(categoryPerCategoryRepository.findAllByParentCategoryId(anyInt()))
+                .thenReturn(Collections.singletonList(new CategoryPerCategory(child, parent)));
+
+        Exception exception = assertThrows(IllegalStateException.class, () ->
+                categoryPerCategoryService.addGroupToCategory("Parent", "Child"));
+
+        assertTrue(exception.getMessage().contains("Cycle detected"));
+    }
+
+    @Test
+    @Transactional
+    void testNestedCategoryExistence() {
+        Category parent = new Category();
+        parent.setId(1);
+        Category child = new Category();
+        child.setId(2);
+
+        when(categoryRepository.findByName("Parent")).thenReturn(parent);
+        when(categoryRepository.findByName("Child")).thenReturn(child);
+        when(categoryPerCategoryRepository.findByParentCategoryAndChildCategory(parent, child))
+                .thenReturn(new CategoryPerCategory(parent, child));
+
+        Exception exception = assertThrows(IllegalStateException.class, () ->
+                categoryPerCategoryService.addGroupToCategory("Parent", "Child"));
+
+        assertTrue(exception.getMessage().contains("already reserved"));
+    }
 }

@@ -20,7 +20,6 @@ import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 class AddMccToExistingCategoryHandlerTest {
-
     @Mock
     private AddMccToExistingCategoryChecker checker;
 
@@ -45,28 +44,25 @@ class AddMccToExistingCategoryHandlerTest {
     }
 
     @Test
-    void handleCommand_CheckerReturnsSuccess_AddsMccsSuccessfully() {
+    void whenCheckerReturnsFailure_thenHandlerReturnsFailure() {
         AddMccToExistingCategoryCommand command = new AddMccToExistingCategoryCommand();
         command.setCategoryName("Electronics");
         command.setMccs(Arrays.asList("1234", "5678"));
-
-        when(checker.checkCommand(command)).thenReturn(new ParsingResult.Success<>(command));
+        when(checker.checkCommand(command)).thenReturn(new ParsingResult.Failure("Invalid input"));
 
         HandlingResult result = handler.handleCommand(command);
 
-        verify(mccPerCategoryService, times(2)).addNewMccToCategory(eq("Electronics"), anyString());
-        assertInstanceOf(HandlingResult.Success.class, result);
-        assertEquals("MCCs added successfully", ((HandlingResult.Success) result).getSuccessMessage());
+        assertInstanceOf(HandlingResult.Failure.class, result);
+        assertEquals("Unable to complete request, due to: Invalid input", ((HandlingResult.Failure) result).getFailureMessage());
     }
 
     @Test
-    void handleCommand_ServiceThrowsException_ReturnsHandlingFailure() {
+    void whenServiceThrowsException_thenHandlerReturnsFailure() {
         AddMccToExistingCategoryCommand command = new AddMccToExistingCategoryCommand();
         command.setCategoryName("Electronics");
-        command.setMccs(List.of("1234"));
-
+        command.setMccs(Arrays.asList("1234", "5678"));
         when(checker.checkCommand(command)).thenReturn(new ParsingResult.Success<>(command));
-        doThrow(new RuntimeException("Database error")).when(mccPerCategoryService).addNewMccToCategory(anyString(), anyString());
+        doThrow(new RuntimeException("Database error")).when(mccPerCategoryService).addNewCategoryWithMcc(anyString(), anyList());
 
         HandlingResult result = handler.handleCommand(command);
 

@@ -20,6 +20,12 @@ public class CategoryPerCategoryService {
     @Autowired
     private MccPerCategoryRepository mccPerCategoryRepository;
 
+    /**
+     * Add group to category. If parent category is the same as child category, throw exception.
+     * @param parentCategoryName name of parent category
+     * @param childCategoryName name of child category
+     * @throws IllegalStateException if parent category is the same as child category, if category is already reserved for another category, if cycle detected, if category already nested in any child category
+     */
     @Transactional
     public void addGroupToCategory(String parentCategoryName, String childCategoryName) {
         if (parentCategoryName.equals(childCategoryName)) {
@@ -32,11 +38,11 @@ public class CategoryPerCategoryService {
             throw new IllegalStateException("Category " + childCategoryName + " already reserved for another category.");
         }
 
-        if (isThereCycleWithNewLink(parentCategory.getId(), childCategory.getId())) {
+        if (isThereChildCategoryWithProvidedId(childCategory.getId(), parentCategory.getId())) {
             throw new IllegalStateException("Cycle detected. Impossible to add category to itself.");
         }
 
-        if (isThereNestedCategoryWithSameChildId(parentCategory, childCategory)) {
+        if (isThereChildCategoryWithProvidedId(parentCategory.getId(), childCategory.getId())) {
             throw new IllegalStateException("Category with name" + childCategoryName + " already nested in any child category. Impossible to add category to itself.");
         }
 
@@ -53,41 +59,20 @@ public class CategoryPerCategoryService {
         return category;
     }
 
-    private boolean isThereCycleWithNewLink(Integer parentCategoryId, Integer possibleChildCategoryId) {
-        var allCategoriesById = categoryPerCategoryRepository.findAllByParentCategoryId(parentCategoryId);
-        if (allCategoriesById.isEmpty()) {
-            return false;
-        }
-        for (var categoryPerCategory : allCategoriesById) {
-            if (categoryPerCategory.getChildCategory().getId().equals(possibleChildCategoryId)) {
+    private boolean isThereChildCategoryWithProvidedId(Integer currentParentCategoryId, Integer categoryIdToSearch) {
+        var currentCategoryCollection = categoryPerCategoryRepository.findAllByParentCategoryId(currentParentCategoryId);
+
+        for (var categoryPerCategory : currentCategoryCollection) {
+            if (categoryPerCategory.getChildCategory().getId().equals(categoryIdToSearch)) {
                 return true;
             }
-            if (isThereCycleWithNewLink(categoryPerCategory.getChildCategory().getId(), possibleChildCategoryId)) {
+
+            if (isThereChildCategoryWithProvidedId(categoryPerCategory.getChildCategory().getId(), categoryIdToSearch)) {
                 return true;
             }
         }
 
         return false;
-    }
-
-    private boolean isThereNestedCategoryWithSameChildId(Category parentCategory, Category possibleChildCategory) {
-        // add all tree items to map and then check if set power equals to list power
-        Set<Category> set = new HashSet<>();
-        var updatedSet = recursiveAddCategoriesToMap(parentCategory.getId(), set);
-        var updatedSetSize = updatedSet.size();
-
-        set.add(possibleChildCategory);
-        return set.size() == updatedSetSize;
-    }
-
-    private Set<Category> recursiveAddCategoriesToMap(Integer parentCategoryId, Set<Category> set) {
-        var allCategoriesById = categoryPerCategoryRepository.findAllByParentCategoryId(parentCategoryId);
-        for (var categoryPerCategory : allCategoriesById) {
-            set.add(categoryPerCategory.getChildCategory());
-            return recursiveAddCategoriesToMap(categoryPerCategory.getChildCategory().getId(), set);
-        }
-
-        return set;
     }
 
     private boolean isParentCategoryReserved(Category parentCategory, Category childCategory) {

@@ -28,29 +28,29 @@ public class MccPerCategoryService {
     @Autowired
     private MccPerCategoryRepository mccPerCategoryRepository;
 
+    /**
+     * Add new category with mcc codes. If category does not exist, create new category.
+     * @param categoryName category name to add (or to create and then add)
+     * @param mccs mcc codes to add
+     */
     @Transactional
-    public OperationResult addNewCategoryWithMcc(String categoryName, Collection<String> mccs) {
+    public void addNewCategoryWithMcc(String categoryName, Collection<String> mccs) {
         Category category = categoryRepository.findByName(categoryName);
-
         if (category == null) {
             category = new Category();
             category.setName(categoryName);
-            categoryRepository.save(category);
+            category = categoryRepository.save(category);
         }
 
-        var addedCategory = categoryRepository.findByName(categoryName);
-
-        for (var mcc : mccs) {
+        for (String mcc : mccs) {
             if (mccPerCategoryRepository.findByMcc(mcc) != null) {
-                return new OperationResult.Failure("Mcc " + mcc + " already reserved for another category.");
+                throw new IllegalStateException("Mcc " + mcc + " already reserved for another category.");
             }
-
-            MccPerCategory mccPerCategory = new MccPerCategory(addedCategory, mcc);
+            MccPerCategory mccPerCategory = new MccPerCategory(category, mcc);
             mccPerCategoryRepository.save(mccPerCategory);
         }
-
-        return new OperationResult.Success("Mccs " + mccs + " added to " + addedCategory.getName() + " category.");
     }
+
 
     @Transactional
     public void addNewMccToCategory(String categoryName, String mcc) {

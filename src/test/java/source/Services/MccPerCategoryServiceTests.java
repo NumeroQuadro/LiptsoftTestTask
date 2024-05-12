@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 import source.Models.Category;
 import source.Models.MccPerCategory;
 import source.Repositories.CategoryPerCategoryRepository;
@@ -36,26 +37,38 @@ class MccPerCategoryServiceTests {
     private MccPerCategoryService mccPerCategoryService;
 
     @Test
+    @Transactional
     void testAddNewCategoryWithMcc_Success() {
+        var category = new Category();
+        String categoryName = "Electronics";
+        category.setId(1);
+        category.setName(categoryName);
+        List<String> mccs = Collections.singletonList("1234");
+
+        when(categoryRepository.findByName(categoryName)).thenReturn(category);
+        when(mccPerCategoryRepository.findByMcc("1234")).thenReturn(null);
+
+        assertDoesNotThrow(() -> mccPerCategoryService.addNewCategoryWithMcc(categoryName, mccs));
+        verify(mccPerCategoryRepository).save(any(MccPerCategory.class));
+    }
+
+    @Test
+    void testAddNewCategoryWithMcc_CategoryNotExist_CreateNewCategoryAndSuccess() {
         String categoryName = "Electronics";
         List<String> mccs = Collections.singletonList("1234");
 
         when(categoryRepository.findByName(categoryName)).thenReturn(null);
         when(mccPerCategoryRepository.findByMcc("1234")).thenReturn(null);
-        when(categoryRepository.save(any(Category.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(categoryRepository.save(any(Category.class))).thenAnswer(invocation -> {
+            Category category = invocation.getArgument(0);
+            category.setId(1);
+            return category;
+        });
 
-        when(categoryRepository.findByName(categoryName)).thenReturn(null);
-        when(mccPerCategoryRepository.findByMcc(mccs.get(0))).thenReturn(null);
-        when(categoryRepository.save(any(Category.class))).thenAnswer(invocation -> invocation.getArgument(0));
-
-        OperationResult result = mccPerCategoryService.addNewCategoryWithMcc(categoryName, mccs);
-
-        assertInstanceOf(OperationResult.Success.class, result);
-        assertEquals("Mccs [1234] added to Electronics category.", ((OperationResult.Success) result).getSuccessMessage());
+        assertDoesNotThrow(() -> mccPerCategoryService.addNewCategoryWithMcc(categoryName, mccs));
         verify(categoryRepository).save(any(Category.class));
         verify(mccPerCategoryRepository).save(any(MccPerCategory.class));
     }
-
 
     @Test
     void testAddNewCategoryWithMcc_MccReserved() {
@@ -67,10 +80,7 @@ class MccPerCategoryServiceTests {
         when(categoryRepository.findByName(categoryName)).thenReturn(category);
         when(mccPerCategoryRepository.findByMcc("1234")).thenReturn(new MccPerCategory());
 
-        OperationResult result = mccPerCategoryService.addNewCategoryWithMcc(categoryName, mccs);
-
-        assertTrue(result instanceof OperationResult.Failure);
-        assertEquals("Mcc 1234 already reserved for another category.", ((OperationResult.Failure) result).getFailureMessage());
+        assertThrows(IllegalStateException.class, () -> mccPerCategoryService.addNewCategoryWithMcc(categoryName, mccs));
     }
 
     @Test

@@ -29,18 +29,36 @@ public class TransactionService {
     @Autowired
     private MccPerCategoryRepository mccPerCategoryRepository;
 
+    /**
+     * Add new transaction to database
+     * @param amount amount of transaction
+     * @param date date of transaction
+     * @param mcc mcc code of transaction
+     */
     public void addNewTransaction(BigDecimal amount, LocalDate date, String mcc) {
         var transactionUuid = UUID.randomUUID();
         var transaction = new Transaction(transactionUuid, amount, date, mcc);
         transactionRepository.save(transaction);
     }
 
+    /**
+     * Add new transaction to database without mcc code
+     * @param amount amount of transaction
+     * @param date date of transaction
+     */
     public void addNewTransactionWithoutMcc(BigDecimal amount, LocalDate date) {
         var transactionUuid = UUID.randomUUID();
         var transaction = new Transaction(transactionUuid, amount, date, null);
         transactionRepository.save(transaction);
     }
 
+    /**
+     * Remove transaction from database
+     * @param amount amount of transaction
+     * @param date date of transaction
+     * @param mcc mcc code of transaction
+     * @throws IllegalArgumentException if transaction does not exist
+     */
     public void removeTransaction(BigDecimal amount, LocalDate date, String mcc) {
         var transactionExample = Example.of(new Transaction(null, amount, date, mcc));
         var transactions = transactionRepository.findAll(transactionExample);
@@ -52,6 +70,10 @@ public class TransactionService {
         transactionRepository.delete(transactions.get(0));
     }
 
+    /**
+     * Get sum of all transactions with provided category name
+     * @return sum of all transactions with provided category name
+     */
     public Map<String, Map<String, BigDecimal>> getTransactionsSumByCategoryInAllMonths() {
         Map<String, Map<String, BigDecimal>> result = new HashMap<>();
 
@@ -62,12 +84,18 @@ public class TransactionService {
                 var sum = getSumOfAllTransactionsWithProvidedCategoryWithNestedChildrenPerMonth(category.getId(), i);
                 sumByMonth.put("Month number " + i, sum);
             }
+
             result.put(category.getName(), sumByMonth);
         }
 
         return result;
     }
 
+    /**
+     * Get sum of all transactions with provided category name in requested month
+     * @param month month number
+     * @return sum of all transactions with provided category name in requested month
+     */
     public Map<String, BigDecimal> getTransactionsSumByCategoryInRequestedMonth(int month) {
         Map<String, BigDecimal> result = new HashMap<>();
 
@@ -77,9 +105,17 @@ public class TransactionService {
             result.put(category.getName(), sum);
         }
 
+        result.put("Without category", getSumOfTransactionsWithProvidedCategoryAndMonth(null, month));
+
         return result;
     }
 
+    /**
+     * Get sum of all transactions with provided category name in requested month
+     * @param categoryName category name
+     * @param month month number
+     * @return sum of all transactions with provided category name in requested month
+     */
     public String getSumOfTransactionsWithProvidedCategoryNameAndMonth(String categoryName, int month) {
         var category = categoryRepository.findByName(categoryName);
         if (category == null) {
@@ -102,6 +138,9 @@ public class TransactionService {
         }
 
         sum = sum.add(getSumOfTransactionsWithProvidedCategoryAndMonth(categoryId, month));
+
+        var transactionsWithoutMcc = transactionRepository.findByMonthWithMccNull(month);
+        sum = sum.add(transactionsWithoutMcc.stream().map(Transaction::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add));
 
         return sum;
     }

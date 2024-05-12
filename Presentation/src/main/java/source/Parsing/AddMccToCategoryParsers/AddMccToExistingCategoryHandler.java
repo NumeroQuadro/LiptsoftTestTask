@@ -23,9 +23,7 @@ public class AddMccToExistingCategoryHandler implements Handleable<AddMccToExist
         }
 
         try {
-            for (var mcc : command.getMccs()) {
-                mccPerCategoryService.addNewMccToCategory(command.getCategoryName(), mcc);
-            }
+            mccPerCategoryService.addNewCategoryWithMcc(command.getCategoryName(), command.getMccs());
 
             return new HandlingResult.Success("MCCs added successfully");
         }

@@ -17,13 +17,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class ShowCategoryAmountByCertainPeriodHandlerTest {
-
     @Mock
     private ShowCategoryAmountByCertainPeriodChecker checker;
-
     @Mock
     private TransactionService transactionService;
-
     @InjectMocks
     private ShowCategoryAmountByCertainPeriodHandler handler;
 
@@ -37,7 +34,7 @@ class ShowCategoryAmountByCertainPeriodHandlerTest {
 
         HandlingResult result = handler.handleCommand(command);
 
-        assertTrue(result instanceof HandlingResult.Failure);
+        assertInstanceOf(HandlingResult.Failure.class, result);
         assertEquals("Unable to complete request, due to: Invalid period", ((HandlingResult.Failure) result).getFailureMessage());
     }
 
@@ -52,7 +49,7 @@ class ShowCategoryAmountByCertainPeriodHandlerTest {
 
         HandlingResult result = handler.handleCommand(command);
 
-        assertTrue(result instanceof HandlingResult.Success);
+        assertInstanceOf(HandlingResult.Success.class, result);
         assertEquals("Sum of transactions is $1000", ((HandlingResult.Success) result).getSuccessMessage());
     }
 
@@ -71,5 +68,4 @@ class ShowCategoryAmountByCertainPeriodHandlerTest {
         assertInstanceOf(HandlingResult.Failure.class, result);
         assertEquals("Unable to complete request, due to: Database error", ((HandlingResult.Failure) result).getFailureMessage());
     }
-
 }

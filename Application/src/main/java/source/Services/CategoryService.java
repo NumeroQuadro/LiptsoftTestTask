@@ -22,6 +22,11 @@ public class CategoryService {
     @Autowired
     private MccPerCategoryRepository mccPerCategoryRepository;
 
+    /**
+     * Add new category to database
+     * @param categoryName category name to add
+     * @throws IllegalStateException if category already exists
+     */
     @Transactional
     public void addNewCategory(String categoryName) {
         var possibleCategory = getCategoryByName(categoryName);
@@ -33,10 +38,20 @@ public class CategoryService {
         categoryRepository.save(category);
     }
 
+    /**
+     * Get category by name. Return null if not found
+     * @param categoryName category name to get
+     * @return category with provided name
+     */
     public Category getCategoryByName(String categoryName) {
         return categoryRepository.findByName(categoryName);
     }
 
+    /**
+     * Remove category by name
+     * @param categoryName category name to remove
+     * @throws IllegalArgumentException if category does not exist
+     */
     public void removeCategory(String categoryName) {
         var category = categoryRepository.findByName(categoryName);
         if (category == null) {
@@ -46,6 +61,10 @@ public class CategoryService {
         categoryRepository.delete(category);
     }
 
+    /**
+     * Get all categories
+     * @return all categories
+     */
     public Collection<Category> getAllCategories() {
         return categoryRepository.findAll();
     }

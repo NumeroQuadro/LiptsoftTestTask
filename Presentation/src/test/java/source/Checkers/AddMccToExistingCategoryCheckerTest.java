@@ -17,12 +17,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class AddMccToExistingCategoryCheckerTest {
-
     @InjectMocks
     private AddMccToExistingCategoryChecker checker;
-
     private AddMccToExistingCategoryCommand command;
-
     @BeforeEach
     void setUp() {
         command = new AddMccToExistingCategoryCommand();
@@ -59,5 +56,4 @@ class AddMccToExistingCategoryCheckerTest {
 
         assertInstanceOf(ParsingResult.Success.class, result);
     }
-
 }
