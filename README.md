@@ -51,7 +51,7 @@ View spending by category or track monthly expenses to better understand your fi
 
 - **Show category amount by period of time**
 
-  -p, --period=&lt;period&gt;: Period to show stats (months, years)
+  -p, --period=&lt;period&gt;: Period to show stats (months)
 
   show-categories
 
